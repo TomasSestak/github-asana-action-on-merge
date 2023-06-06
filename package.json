@@ -1,6 +1,6 @@
 {
-  "name": "github-asana",
-  "version": "1.0.3",
+  "name": "github-asana-action-on-merge",
+  "version": "1.0.0",
   "description": "Action to integrate git with asana",
   "main": "index.js",
   "scripts": {
@@ -8,21 +8,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/insurify/github-actions.git"
+    "url": "git+https://github.com/TomasSestak/github-asana-action-on-merge.git"
   },
   "keywords": [
     "github-actions",
     "asana",
     "git"
   ],
-  "author": "Ali Sajid",
+  "author": "Tomáš Šesták",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/insurify/github-actions/issues"
+    "url": "https://github.com/TomasSestak/github-asana-action-on-merge/issues"
   },
-  "homepage": "https://github.com/insurify/github-actions#readme",
+  "homepage": "https://github.com/TomasSestak/github-asana-action-on-merge#readme",
   "dependencies": {
-    "@actions/core": "^1.9.1",
+    "@actions/core": "^1.10.0",
     "@actions/github": "^1.1.0",
     "asana": "^0.17.3"
   }

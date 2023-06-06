@@ -6,7 +6,7 @@ This action integrates asana with github.
 ### Prerequisites
 
 - Asana account with the permission on the particular project you want to integrate with.
-- Must provide the task url in the PR description.
+- Must provide the task url in the Commit message.
 
 ## Inputs
 
@@ -40,10 +40,10 @@ if you don't want to move task omit `targets`.
 #### Without special characters:
 
 ```yaml
-uses: insurify/github-asana-action@v1.0.5
+uses: TomasSestak/github-asana-action-on-merge@v1.0.0
 with:
   asana-pat: 'Your PAT'
-  task-comment: 'View Pull Request Here: '
+  task-comment: 'View Your Commit Here: '
   trigger-phrase: 'Asana Task:'
   targets: '[{"project": "Backlog", "section": "Development Done"}, {"project": "Current Sprint", "section": "In Review"}]'
 ```
@@ -51,10 +51,10 @@ with:
 #### With special characters:
 
 ```yaml
-uses: insurify/github-asana-action@v1.0.5
+uses: TomasSestak/github-asana-action-on-merge@v1.0.0
 with:
   asana-pat: 'Your PAT'
-  task-comment: 'View Pull Request Here: '
+  task-comment: 'View Your Commit Here: '
   trigger-phrase: "\\*\\*Asana Task:\\*\\*"
   targets: '[{"project": "Backlog", "section": "Development Done"}, {"project": "Current Sprint", "section": "In Review"}]'
 ```

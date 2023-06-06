@@ -1,12 +1,13 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const asana = require('asana');
+const execSync = require('child_process').execSync;
 
 async function asanaOperations(
-  asanaPAT,
-  targets,
-  taskId,
-  taskComment
+    asanaPAT,
+    targets,
+    taskId,
+    taskComment
 ) {
   try {
     const client = asana.Client.create({
@@ -15,12 +16,12 @@ async function asanaOperations(
     }).useAccessToken(asanaPAT);
 
     const task = await client.tasks.findById(taskId);
-    
+
     targets.forEach(async target => {
       let targetProject = task.projects.find(project => project.name === target.project);
       if (targetProject) {
         let targetSection = await client.sections.findByProject(targetProject.gid)
-          .then(sections => sections.find(section => section.name === target.section));
+            .then(sections => sections.find(section => section.name === target.section));
         if (targetSection) {
           await client.sections.addTask(targetSection.gid, { task: taskId });
           core.info(`Moved to: ${target.project}/${target.section}`);
@@ -45,25 +46,30 @@ async function asanaOperations(
 
 try {
   const ASANA_PAT = core.getInput('asana-pat'),
-    TARGETS = core.getInput('targets'),
-    TRIGGER_PHRASE = core.getInput('trigger-phrase'),
-    TASK_COMMENT = core.getInput('task-comment'),
-    PULL_REQUEST = github.context.payload.pull_request,
-    REGEX = new RegExp(
-      `${TRIGGER_PHRASE} *\\[(.*?)\\]\\(https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+).*?\\)`,
-      'g'
-    );
+      TARGETS = core.getInput('targets'),
+      TRIGGER_PHRASE = core.getInput('trigger-phrase'),
+      TASK_COMMENT = core.getInput('task-comment'),
+      REGEX = new RegExp(
+          `${TRIGGER_PHRASE} *\\[(.*?)\\]\\(https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+).*?\\)`,
+          'g'
+      );
+
   let taskComment = null,
-    targets = TARGETS? JSON.parse(TARGETS) : [],
-    parseAsanaURL = null;
+      targets = TARGETS? JSON.parse(TARGETS) : [],
+      parseAsanaURL = null;
 
   if (!ASANA_PAT){
     throw({message: 'ASANA PAT Not Found!'});
   }
+
+  // Get the latest commit message
+  const commitMessage = execSync('git log -1 --pretty=%B').toString();
+
   if (TASK_COMMENT) {
-    taskComment = `${TASK_COMMENT} ${PULL_REQUEST.html_url}`;
+    taskComment = `${TASK_COMMENT} ${github.context.payload.repository.html_url}/commit/${github.context.sha}`;
   }
-  while ((parseAsanaURL = REGEX.exec(PULL_REQUEST.body)) !== null) {
+
+  while ((parseAsanaURL = REGEX.exec(commitMessage)) !== null) {
     let taskId = parseAsanaURL.groups.task;
     if (taskId) {
       asanaOperations(ASANA_PAT, targets, taskId, taskComment);
