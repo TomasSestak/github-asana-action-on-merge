@@ -50,9 +50,8 @@ try {
 		TRIGGER_PHRASE = core.getInput('trigger-phrase'),
 		TASK_COMMENT = core.getInput('task-comment'),
 		REGEX = new RegExp(
-		`${TRIGGER_PHRASE}: https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`,
-		'g'
-	);
+			`${TRIGGER_PHRASE}: https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`
+		)
 
 
 
@@ -74,9 +73,11 @@ try {
 	}
 
 
-	console.log(parseAsanaURL, REGEX.exec(commitMessage))
+	parseAsanaURL = REGEX.exec(commitMessage);
 
-	while ((parseAsanaURL = REGEX.exec(commitMessage)) !== null) {
+	console.log(parseAsanaURL)
+
+	if (parseAsanaURL && parseAsanaURL.groups) {
 		let taskId = parseAsanaURL.groups.task;
 		console.log(parseAsanaURL.groups);
 		if (taskId) {
