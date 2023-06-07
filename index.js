@@ -67,10 +67,10 @@ try {
 		taskComment = `${TASK_COMMENT} ${github.context.payload.repository.html_url}/commit/${github.context.sha}`;
 	}
 
-	let parts = commitMessage.split(' ');
+	let parts = commitMessage.split(/:(.+)/);
 	console.log(`Parts: ${parts}`); // debug statement
-	if(parts[0] == TRIGGER_PHRASE) {
-		let url = parts[1]; // this is your Asana task URL
+	if(parts[0].trim() == TRIGGER_PHRASE.trim()) {
+		let url = parts[1].trim(); // this is your Asana task URL
 		console.log(`URL: ${url}`); // debug statement
 		let urlParts = url.split('/');
 		console.log(`URL Parts: ${urlParts}`); // debug statement
