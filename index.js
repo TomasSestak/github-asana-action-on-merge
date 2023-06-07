@@ -48,10 +48,7 @@ try {
 	const ASANA_PAT = core.getInput('asana-pat'),
 		TARGETS = core.getInput('targets'),
 		TRIGGER_PHRASE = core.getInput('trigger-phrase'),
-		TASK_COMMENT = core.getInput('task-comment'), REGEX = new RegExp(`${TRIGGER_PHRASE}: https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`, 'g');
-
-
-
+		TASK_COMMENT = core.getInput('task-comment');
 
 	let taskComment = null,
 		targets = TARGETS ? JSON.parse(TARGETS) : [],
@@ -62,28 +59,24 @@ try {
 	}
 
 	// Get the latest commit message
-	const commitMessage = execSync('git log -1 --pretty=%B').toString().trim();
+	const commitMessage = execSync('git log -1 --pretty=%B').toString();
 
-	console.log(`Trigger Phrase: ${TRIGGER_PHRASE}`);
-	console.log(`Commit Message: ${commitMessage}`);
+	console.log(`Commit Message: ${commitMessage}`)
 
 	if (TASK_COMMENT) {
 		taskComment = `${TASK_COMMENT} ${github.context.payload.repository.html_url}/commit/${github.context.sha}`;
 	}
 
+	let parts = commitMessage.split(' ');
+	if(parts[0] == TRIGGER_PHRASE) {
+		let url = parts[1]; // this is your Asana task URL
+		let taskId = url.split('/')[6]; // this will be your Asana task ID
+		console.log("Asana task URL: ", url);
+		console.log("Asana task ID: ", taskId);
 
-	parseAsanaURL = REGEX.exec(commitMessage);
-
-	console.log(parseAsanaURL)
-
-	if (parseAsanaURL && parseAsanaURL.groups) {
-		let taskId = parseAsanaURL.groups.task;
-		console.log(parseAsanaURL.groups);
-		if (taskId) {
-			asanaOperations(ASANA_PAT, targets, taskId, taskComment);
-		} else {
-			core.info(`Invalid Asana task URL after the trigger phrase ${TRIGGER_PHRASE}`);
-		}
+		asanaOperations(ASANA_PAT, targets, taskId, taskComment);
+	} else {
+		core.info(`Invalid Asana task URL after the trigger phrase ${TRIGGER_PHRASE}`);
 	}
 } catch (error) {
 	core.error(error.message);
