@@ -74,7 +74,7 @@ try {
 		console.log(`URL: ${url}`); // debug statement
 		let urlParts = url.split('/');
 		console.log(`URL Parts: ${urlParts}`); // debug statement
-		let taskId = urlParts[6]; // this will be your Asana task ID
+		let taskId = urlParts[5]; // this will be your Asana task ID
 		console.log("Asana task URL: ", url);
 		console.log("Asana task ID: ", taskId);
 
