@@ -37,7 +37,7 @@ async function asanaOperations(
       await client.tasks.addComment(taskId, {
         text: taskComment
       });
-      core.info('Added the pull request link to the Asana task.');
+      core.info('Added the commit link to the Asana task.');
     }
   } catch (ex) {
     console.error(ex.value);
@@ -65,12 +65,18 @@ try {
   // Get the latest commit message
   const commitMessage = execSync('git log -1 --pretty=%B').toString();
 
+  console.log(`Commit Message: ${commitMessage}`)
+
   if (TASK_COMMENT) {
     taskComment = `${TASK_COMMENT} ${github.context.payload.repository.html_url}/commit/${github.context.sha}`;
   }
 
+
+  console.log(parseAsanaURL, REGEX.exec(commitMessage))
+
   while ((parseAsanaURL = REGEX.exec(commitMessage)) !== null) {
     let taskId = parseAsanaURL.groups.task;
+    console.log(parseAsanaURL.groups);
     if (taskId) {
       asanaOperations(ASANA_PAT, targets, taskId, taskComment);
     } else {
