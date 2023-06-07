@@ -48,10 +48,8 @@ try {
 	const ASANA_PAT = core.getInput('asana-pat'),
 		TARGETS = core.getInput('targets'),
 		TRIGGER_PHRASE = core.getInput('trigger-phrase'),
-		TASK_COMMENT = core.getInput('task-comment'),
-		REGEX = new RegExp(
-			`${TRIGGER_PHRASE}: https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`
-		)
+		TASK_COMMENT = core.getInput('task-comment'), REGEX = new RegExp(`${TRIGGER_PHRASE}: https:\\/\\/app.asana.com\\/(\\d+)\\/(?<project>\\d+)\\/(?<task>\\d+)`, 'g');
+
 
 
 
@@ -64,9 +62,10 @@ try {
 	}
 
 	// Get the latest commit message
-	const commitMessage = execSync('git log -1 --pretty=%B').toString();
+	const commitMessage = execSync('git log -1 --pretty=%B').toString().trim();
 
-	console.log(`Commit Message: ${commitMessage}`)
+	console.log(`Trigger Phrase: ${TRIGGER_PHRASE}`);
+	console.log(`Commit Message: ${commitMessage}`);
 
 	if (TASK_COMMENT) {
 		taskComment = `${TASK_COMMENT} ${github.context.payload.repository.html_url}/commit/${github.context.sha}`;
