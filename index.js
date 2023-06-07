@@ -69,12 +69,12 @@ try {
 
 	let parts = commitMessage.split(/:(.+)/);
 	console.log(`Parts: ${parts}`); // debug statement
-	if(parts[0].trim() == TRIGGER_PHRASE.trim()) {
+	if(parts[0].trim() + ":" == TRIGGER_PHRASE.trim()) {
 		let url = parts[1].trim(); // this is your Asana task URL
 		console.log(`URL: ${url}`); // debug statement
 		let urlParts = url.split('/');
 		console.log(`URL Parts: ${urlParts}`); // debug statement
-		let taskId = urlParts[7]; // this will be your Asana task ID
+		let taskId = urlParts[6]; // this will be your Asana task ID
 		console.log("Asana task URL: ", url);
 		console.log("Asana task ID: ", taskId);
 
