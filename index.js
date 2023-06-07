@@ -70,7 +70,7 @@ try {
 	let parts = commitMessage.split(' ');
 	if(parts[0] == TRIGGER_PHRASE) {
 		let url = parts[1]; // this is your Asana task URL
-		let taskId = url.split('/')[6]; // this will be your Asana task ID
+		let taskId = url.split('/')[7]; // this will be your Asana task ID
 		console.log("Asana task URL: ", url);
 		console.log("Asana task ID: ", taskId);
 
